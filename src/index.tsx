@@ -7,7 +7,7 @@ interface Props {
   height?: number
   paintInterval?: number
   color?: string
-  beatFrequency: number | null
+  beatFrequency?: number
 }
 
 const Cardiogram = forwardRef<ManualBangHandle, Props>(

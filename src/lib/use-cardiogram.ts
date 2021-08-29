@@ -24,7 +24,7 @@ interface UseCardiogram {
     height: number
     color: string
     paintInterval: number
-    beatFrequency: number | null
+    beatFrequency?: number
     ref: Ref<ManualBangHandle>
   }): {
     width: number
@@ -160,7 +160,7 @@ const useCardiogram: UseCardiogram = ({
     if (beatFrequency) {
       bang()
     }
-  }, beatFrequency)
+  }, beatFrequency || null)
 
   return {
     width,
