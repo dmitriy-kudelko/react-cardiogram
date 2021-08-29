@@ -16,18 +16,19 @@
 
 > Animated cardiogram component for React
 
+Inspired by and based on [ecg-line-webcomponent](https://github.com/tripolskypetr/ecg-line-webcomponent) package.
+
 ### ✨ [Demo](https://react-cardiogram.vercel.app)
 
 ## Install
 
 ```sh
-yarn install
+npm i react-cardiogram
 ```
-
-## Usage
+or 
 
 ```sh
-yarn start
+yarn add react-cardiogram
 ```
 
 ## Author
