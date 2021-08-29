@@ -1,6 +1,8 @@
 <h1 align="center">Welcome to react-cardiogram 👋</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0--beta.0-blue.svg?cacheSeconds=2592000" />
+  <a href="https://www.npmjs.com/package/react-cardiogram" target="_blank">
+    <img alt="Version" src="https://img.shields.io/npm/v/react-cardiogram.svg">
+  </a>
   <a href="https://github.com/dmitriy-kudelko/react-cardiogram#readme" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
@@ -14,18 +16,26 @@
 
 > Animated cardiogram component for React
 
+### ✨ [Demo](https://react-cardiogram.vercel.app)
+
 ## Install
 
 ```sh
 yarn install
 ```
 
+## Usage
+
+```sh
+yarn start
+```
+
 ## Author
 
 👤 **Dmitriy Kudelko <dmitriy.kudelko@gmail.com>**
 
-* Website: dmitry-kudelko
 * Github: [@dmitriy-kudelko](https://github.com/dmitriy-kudelko)
+* LinkedIn: [@dmitry-kudelko](https://linkedin.com/in/dmitry-kudelko)
 
 ## Show your support
 
