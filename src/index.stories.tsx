@@ -12,8 +12,12 @@ const Meta: ComponentMeta<CardiogramType> = {
   args: {
     height: 100,
     color: '#22ff22',
+    scale: 0.35,
+    density: 2,
+    thickness: 2,
     paintInterval: 30,
-    beatFrequency: 1000
+    beatFrequency: 1000,
+    cursorSize: 3
   }
 }
 

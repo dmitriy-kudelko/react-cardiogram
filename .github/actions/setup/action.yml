@@ -1,0 +1,13 @@
+name: 'Setup'
+description: 'Setup node, yarn and install dependencies'
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+
+    - uses: bahmutov/npm-install@v1
+      with:
+        install-command: yarn --frozen-lockfile --silent
