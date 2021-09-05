@@ -1,7 +1,7 @@
 {
   "name": "react-cardiogram",
   "description": "Animated cardiogram component for React",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "license": "MIT",
   "author": "Dmitriy Kudelko <dmitriy.kudelko@gmail.com>",
   "source": "src/index.tsx",

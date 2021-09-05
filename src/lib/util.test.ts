@@ -9,7 +9,7 @@ const assertBeatCount = (width: number, beatCount: number, density = 2) => {
   const expected = new Array(beatCount).fill(0)
   const result = createBeatRange(width, density)
 
-  expect(result).toEqual(expected)
+  expect(result.length).toEqual(expected.length)
 }
 
 describe('createBeatRange', () => {
