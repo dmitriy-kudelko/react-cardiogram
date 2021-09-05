@@ -31,6 +31,21 @@ or
 yarn add react-cardiogram
 ```
 
+## Options
+
+| Name            | Description   | Optional | Default | Unit |
+| --------------- |-------------- | -------- | ------- | ---- |
+| `height`        | Canvas height | No | `100` | px | 
+| `width`         | Default canvas width. Not necessary to explicitly set as it auto-adjusts to a container width. | No  | `500` | px |
+| `color`         | Line color | No | `#22ff22` | HEX |
+| `scale`         | How much of canvas height the actual drawing takes | No  | `0.35` | % |
+| `density`       | Horizontal "resolution". i.e setting 2 will render 250 points for 500px-wide container | No  | `2` | px |
+| `thickness`     | Line thickness | No  | `2` | px |
+| `cursorSize`    | The size of cursor | No  | `3` | px |
+| `paintInterval` | Time interval between drawing any two adjacent points. Eventually controls the cardiogram "speed". | No  | `30` | ms|
+| `beatFrequency` | Draws a spike each number of `ms` when provided | Yes  | - | ms|
+
+
 ## Author
 
 👤 **Dmitriy Kudelko <dmitriy.kudelko@gmail.com>**
