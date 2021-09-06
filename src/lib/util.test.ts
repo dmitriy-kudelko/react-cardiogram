@@ -2,17 +2,18 @@ import {
   spikeValues,
   createBeatRange,
   getBeatValue,
-  getNextBeatIndex
+  getNextBeatIndex,
+  constraintWithinRange
 } from './util'
 
-const assertBeatCount = (width: number, beatCount: number, density = 2) => {
-  const expected = new Array(beatCount).fill(0)
-  const result = createBeatRange(width, density)
-
-  expect(result.length).toEqual(expected.length)
-}
-
 describe('createBeatRange', () => {
+  const assertBeatCount = (width: number, beatCount: number, density = 2) => {
+    const expected = new Array(beatCount).fill(0)
+    const result = createBeatRange(width, density)
+
+    expect(result.length).toEqual(expected.length)
+  }
+
   it('creates at least 100 beats', () => {
     assertBeatCount(10, 100)
     assertBeatCount(200, 100, 4)
@@ -44,6 +45,19 @@ describe('getNextBeatIndex', () => {
     'produces correct index for currentIndex %i and beatCount %i',
     (currentIndex, beatCount, nextIndex) => {
       expect(getNextBeatIndex(currentIndex, beatCount)).toEqual(nextIndex)
+    }
+  )
+})
+
+describe('constraintWithinRange', () => {
+  it.each<number[]>([
+    [8, 10, 100, 10],
+    [11, 10, 100, 11],
+    [101, 10, 100, 100]
+  ])(
+    'constraints value %i within range of min %i and max %i',
+    (value, min, max, result) => {
+      expect(constraintWithinRange(value, min, max)).toEqual(result)
     }
   )
 })

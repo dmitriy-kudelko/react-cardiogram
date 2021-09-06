@@ -1,20 +1,15 @@
 import React, { forwardRef } from 'react'
 
 import useCardiogram, { ManualBangHandle } from './lib/use-cardiogram'
+import { RenderOptions } from './lib/CanvasRenderer'
 
-interface Props {
-  width?: number
-  height?: number
+interface CardiogramProps extends Partial<RenderOptions> {
   paintInterval?: number
-  color?: string
-  scale?: number
-  cursorSize?: number
-  thickness?: number
-  density?: number
   beatFrequency?: number
+  density?: number
 }
 
-const Cardiogram = forwardRef<ManualBangHandle, Props>(
+const Cardiogram = forwardRef<ManualBangHandle, CardiogramProps>(
   (
     {
       width: defaultWidth = 500,
@@ -22,7 +17,7 @@ const Cardiogram = forwardRef<ManualBangHandle, Props>(
       paintInterval = 30,
       color = '#22ff22',
       thickness = 2,
-      scale = 0.35,
+      scale = 35,
       cursorSize = 3,
       density = 2,
       beatFrequency
