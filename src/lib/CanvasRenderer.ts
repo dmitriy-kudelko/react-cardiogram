@@ -1,4 +1,4 @@
-interface RenderOptions {
+export interface RenderOptions {
   width: number
   height: number
   color: string
@@ -23,7 +23,7 @@ export default class CanvasRenderer {
 
     const baseY = height / 2
     const { length } = beats
-    const yFactor = height * Math.min(scale, 1)
+    const yFactor = height * (scale / 100)
 
     ctx.strokeStyle = color
     ctx.lineWidth = thickness
