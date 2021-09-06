@@ -46,3 +46,9 @@ export const getNextBeatIndex = (
 
   return 0
 }
+
+export const constraintWithinRange = (
+  value: number,
+  min: number,
+  max: number
+): number => Math.max(Math.min(value, max), min)
