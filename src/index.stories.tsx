@@ -1,7 +1,8 @@
 import React, { MouseEventHandler, useCallback, useRef } from 'react'
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 
-import Cardiogram, { defaults } from '.'
+import Cardiogram from '.'
+import defaults from './lib/defaults'
 import { ManualBangHandle } from './lib/types'
 
 type CardiogramType = typeof Cardiogram

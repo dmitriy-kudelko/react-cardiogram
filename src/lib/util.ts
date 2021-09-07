@@ -39,7 +39,13 @@ export const getSpikeValue = (index: number): number => {
 export const getNextBeatIndex = (
   currentIndex: number,
   beatCount: number
-): number => (currentIndex + 1) % beatCount
+): number => {
+  if (currentIndex < beatCount - 1) {
+    return currentIndex + 1
+  }
+
+  return 0
+}
 
 export const constraintWithinRange = (
   value: number,
