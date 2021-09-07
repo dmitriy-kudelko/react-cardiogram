@@ -119,7 +119,7 @@ const useCardiogram: UseCardiogram = ({
   }, [isSpike, fillSpikeData, fillIdleData])
 
   const paint = useCallback(() => {
-    renderer?.draw(beats.current, beatIndex.current)
+    renderer?.render(beats.current, beatIndex.current)
   }, [renderer])
 
   useInterval(

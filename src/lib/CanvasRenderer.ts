@@ -16,7 +16,7 @@ export default class CanvasRenderer {
     this.options = options
   }
 
-  draw(beats: number[], beatIndex: number): void {
+  render(beats: number[], beatIndex: number): void {
     const { ctx } = this
     const { width, height, color, thickness, scale } = this.options
     ctx.clearRect(0, 0, width, height)
