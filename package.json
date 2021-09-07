@@ -41,7 +41,9 @@
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": ">=6",
     "jest": "^27.1.0",
+    "lint-staged": ">=10",
     "microbundle": "^0.13.3",
     "prettier": "2.3.2",
     "prettier-config-standard": "^4.0.0",
@@ -66,6 +68,7 @@
     "build": "microbundle --jsx React.createElement -f esm,cjs",
     "prebuild": "rm -rf ./dist",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "husky install"
   }
 }
