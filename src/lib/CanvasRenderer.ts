@@ -16,37 +16,36 @@ export default class CanvasRenderer {
     this.options = options
   }
 
-  draw(beats: number[], beatIndex: number): void {
+  render(beats: number[], beatIndex: number): void {
     const { ctx } = this
-    const { width, height, color, thickness, scale } = this.options
+    const { width, height, scale } = this.options
+
+    this.setRenderOptions()
     ctx.clearRect(0, 0, width, height)
 
     const baseY = height / 2
     const { length } = beats
     const yFactor = height * (scale / 100)
 
-    ctx.strokeStyle = color
-    ctx.lineWidth = thickness
     ctx.beginPath()
     ctx.moveTo(0, baseY)
 
     let x = 0
     let y = 0
-    let heartIndex = (beatIndex + 1) % length
-    const step = (width - 5) / length
+    let currentIndex = (beatIndex + 1) % length
+    const step = width / length
 
-    for (let i = 0; i < length; i++) {
-      x = i * step
-      y = baseY - beats[heartIndex] * yFactor
-      heartIndex = (heartIndex + 1) % length
+    beats.forEach((value, index) => {
+      x = index * step
+      y = baseY - beats[currentIndex] * yFactor
+      currentIndex = (currentIndex + 1) % length
 
       ctx.lineTo(x, y)
-    }
+    })
 
     ctx.stroke()
     ctx.closePath()
     ctx.beginPath()
-    ctx.fillStyle = color
 
     this.drawCursor(x - 1, y - 1)
 
@@ -54,7 +53,7 @@ export default class CanvasRenderer {
     ctx.closePath()
   }
 
-  drawCursor(x: number, y: number): void {
+  private drawCursor(x: number, y: number): void {
     const { ctx } = this
 
     ctx.save()
@@ -63,5 +62,14 @@ export default class CanvasRenderer {
     ctx.arc(0, 0, this.options.cursorSize, 0, Math.PI * 2, true)
     ctx.restore()
     ctx.closePath()
+  }
+
+  private setRenderOptions(): void {
+    const { ctx } = this
+    const { color, thickness } = this.options
+
+    ctx.strokeStyle = color
+    ctx.fillStyle = color
+    ctx.lineWidth = thickness
   }
 }

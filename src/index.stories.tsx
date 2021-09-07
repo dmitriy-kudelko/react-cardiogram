@@ -1,8 +1,9 @@
 import React, { MouseEventHandler, useCallback, useRef } from 'react'
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 
-import Cardiogram from './index'
-import { ManualBangHandle } from './lib/use-cardiogram'
+import Cardiogram from '.'
+import defaults from './lib/defaults'
+import { ManualBangHandle } from './lib/types'
 
 type CardiogramType = typeof Cardiogram
 
@@ -10,14 +11,8 @@ const Meta: ComponentMeta<CardiogramType> = {
   title: 'Cardiogram',
   component: Cardiogram,
   args: {
-    height: 100,
-    color: '#22ff22',
-    scale: 35,
-    density: 2,
-    thickness: 2,
-    paintInterval: 30,
-    beatFrequency: 1000,
-    cursorSize: 3
+    ...defaults,
+    beatFrequency: 1000
   }
 }
 
