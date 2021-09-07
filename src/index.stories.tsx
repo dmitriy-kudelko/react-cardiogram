@@ -2,14 +2,17 @@ import React, { MouseEventHandler, useCallback, useRef } from 'react'
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 
 import Cardiogram, { defaults } from '.'
-import { ManualBangHandle } from './lib/use-cardiogram'
+import { ManualBangHandle } from './lib/types'
 
 type CardiogramType = typeof Cardiogram
 
 const Meta: ComponentMeta<CardiogramType> = {
   title: 'Cardiogram',
   component: Cardiogram,
-  args: defaults
+  args: {
+    ...defaults,
+    beatFrequency: 1000
+  }
 }
 
 export default Meta

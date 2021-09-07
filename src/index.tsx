@@ -1,18 +1,10 @@
 import React, { forwardRef } from 'react'
 
-import useCardiogram, { ManualBangHandle } from './lib/use-cardiogram'
+import useCardiogram from './lib/use-cardiogram'
 import { RenderOptions } from './lib/CanvasRenderer'
+import { CardiogramProps, ManualBangHandle, OtherOptions } from './lib/types'
 
-interface CardiogramProps extends Partial<RenderOptions>, Partial<Options> {
-  beatFrequency?: number
-}
-
-interface Options {
-  paintInterval: number
-  density: number
-}
-
-export const defaults: RenderOptions & Options = {
+export const defaults: RenderOptions & OtherOptions = {
   width: 500,
   height: 100,
   color: '#22ff22',

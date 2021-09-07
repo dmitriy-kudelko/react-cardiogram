@@ -17,18 +17,11 @@ import {
   constraintWithinRange
 } from './util'
 import useWindowResize from './use-window-resize'
-import CanvasRenderer from './CanvasRenderer'
+import CanvasRenderer, { RenderOptions } from './CanvasRenderer'
+import { ManualBangHandle, OtherOptions } from './types'
 
-interface Props {
+interface Props extends Omit<RenderOptions, 'width'>, OtherOptions {
   defaultWidth: number
-  height: number
-  color: string
-  thickness: number
-  scale: number
-  cursorSize: number
-  density: number
-  paintInterval: number
-  beatFrequency?: number
   ref: Ref<ManualBangHandle>
 }
 
@@ -40,10 +33,6 @@ interface ReturnType {
 
 interface UseCardiogram {
   (props: Props): ReturnType
-}
-
-export interface ManualBangHandle {
-  bang: () => void
 }
 
 const useCardiogram: UseCardiogram = ({
