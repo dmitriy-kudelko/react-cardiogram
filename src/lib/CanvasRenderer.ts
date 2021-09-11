@@ -1,3 +1,12 @@
+import {
+  createBeatRange,
+  getIdleBeatValue,
+  getNextBeatIndex,
+  getSpikeValue,
+  spikeValues
+} from './util'
+import IntervalManager from './IntervalManager'
+
 export interface RenderOptions {
   width: number
   height: number
@@ -5,30 +14,54 @@ export interface RenderOptions {
   thickness: number
   scale: number
   cursorSize: number
+  density: number
+  paintInterval: number
+  beatFrequency?: number
+}
+
+interface Coordinates {
+  x: number
+  y: number
 }
 
 export default class CanvasRenderer {
   private readonly ctx: CanvasRenderingContext2D
   private readonly options: RenderOptions
+  private readonly beats: number[] = []
+  private beatIndex = 0
+  private spikeIndex = -1
+  private isSpike = false
+  private intervalManager: IntervalManager
 
-  constructor(ctx: CanvasRenderingContext2D, options: RenderOptions) {
+  constructor(
+    ctx: CanvasRenderingContext2D,
+    intervalManager: IntervalManager,
+    options: RenderOptions
+  ) {
     this.ctx = ctx
     this.options = options
+    this.beats = createBeatRange(options.width, options.density)
+    this.intervalManager = intervalManager
+
+    this.initTimers()
   }
 
-  render(beats: number[], beatIndex: number): void {
-    const { ctx } = this
-    const { width, height, scale } = this.options
+  public renderSpike(): void {
+    this.isSpike = true
+  }
 
-    this.setRenderOptions()
-    ctx.clearRect(0, 0, width, height)
+  public destroy(): void {
+    this.intervalManager.clearAll()
+  }
 
-    const baseY = height / 2
+  private eachBeat(
+    baseY: number,
+    iteratee: (coords: Coordinates) => void
+  ): Coordinates {
+    const { beats, beatIndex } = this
     const { length } = beats
+    const { width, height, scale } = this.options
     const yFactor = height * (scale / 100)
-
-    ctx.beginPath()
-    ctx.moveTo(0, baseY)
 
     let x = 0
     let y = 0
@@ -40,6 +73,28 @@ export default class CanvasRenderer {
       y = baseY - beats[currentIndex] * yFactor
       currentIndex = (currentIndex + 1) % length
 
+      iteratee({ x, y })
+    })
+
+    return {
+      x,
+      y
+    }
+  }
+
+  private render(): void {
+    const { ctx } = this
+    const { width, height } = this.options
+
+    this.setDrawingOptions()
+    ctx.clearRect(0, 0, width, height)
+
+    const baseY = height / 2
+
+    ctx.beginPath()
+    ctx.moveTo(0, baseY)
+
+    const { x, y } = this.eachBeat(baseY, ({ x, y }) => {
       ctx.lineTo(x, y)
     })
 
@@ -64,12 +119,52 @@ export default class CanvasRenderer {
     ctx.closePath()
   }
 
-  private setRenderOptions(): void {
+  private setDrawingOptions(): void {
     const { ctx } = this
     const { color, thickness } = this.options
 
     ctx.strokeStyle = color
     ctx.fillStyle = color
     ctx.lineWidth = thickness
+  }
+
+  private initTimers() {
+    const { paintInterval, beatFrequency } = this.options
+
+    this.intervalManager.setInterval(() => {
+      this.updateData()
+      this.render()
+    }, paintInterval)
+
+    if (beatFrequency) {
+      this.intervalManager.setInterval(() => {
+        this.renderSpike()
+      }, beatFrequency)
+    }
+  }
+
+  private updateData(): void {
+    this.beatIndex = getNextBeatIndex(this.beatIndex, this.beats.length)
+
+    if (this.spikeIndex >= 0 || this.isSpike) {
+      this.fillSpikeData()
+      this.isSpike = false
+    } else {
+      this.fillIdleData()
+    }
+  }
+
+  private setBeatValue(value: number): void {
+    this.beats[this.beatIndex] = value
+  }
+
+  private fillIdleData(): void {
+    this.setBeatValue(getIdleBeatValue())
+  }
+
+  private fillSpikeData() {
+    this.setBeatValue(getSpikeValue(this.spikeIndex))
+    this.spikeIndex =
+      this.spikeIndex < spikeValues.length ? this.spikeIndex + 1 : -1
   }
 }

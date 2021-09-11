@@ -6,21 +6,14 @@ import {
   useRef,
   useState
 } from 'react'
-import useInterval from 'use-interval'
 
-import {
-  spikeValues,
-  createBeatRange,
-  getIdleBeatValue,
-  getNextBeatIndex,
-  getSpikeValue,
-  constraintWithinRange
-} from './util'
+import { constraintWithinRange } from './util'
 import useWindowResize from './use-window-resize'
 import CanvasRenderer, { RenderOptions } from './CanvasRenderer'
-import { ManualBangHandle, OtherOptions } from './types'
+import { ManualBangHandle } from './types'
+import IntervalManager from './IntervalManager'
 
-interface Props extends Omit<RenderOptions, 'width'>, OtherOptions {
+interface Props extends Omit<RenderOptions, 'width'> {
   defaultWidth: number
   ref: Ref<ManualBangHandle>
 }
@@ -48,21 +41,17 @@ const useCardiogram: UseCardiogram = ({
   ref
 }) => {
   const [width, setWidth] = useState<number>(defaultWidth)
-  const [isSpike, setIsSpike] = useState<boolean>(false)
 
-  const beatIndex = useRef<number>(0)
-  const spikeIndex = useRef<number>(-1)
+  const renderer = useRef<CanvasRenderer>()
   const canvas = useRef<HTMLCanvasElement>(null)
   const container = useRef<HTMLDivElement>(null)
-  const beats = useRef<number[]>([])
-  const [renderer, setRenderer] = useState<CanvasRenderer>()
 
   // draws a spike
   const bang = useCallback(() => {
-    setIsSpike(true)
+    renderer.current?.renderSpike()
   }, [])
 
-  // exposes bang method so that it could be invoked externally vie ref.bang()
+  // exposes bang method so that it could be invoked externally via ref.bang()
   useImperativeHandle(ref, () => ({
     bang
   }))
@@ -71,55 +60,10 @@ const useCardiogram: UseCardiogram = ({
     if (container.current) {
       const { width } = container.current.getBoundingClientRect()
       setWidth(width)
-
-      beats.current = createBeatRange(width, density)
     }
-  }, [density])
-
-  useWindowResize(onResize)
-
-  const setBeatValue = useCallback<(value: number) => void>((value) => {
-    beats.current[beatIndex.current] = value
   }, [])
 
-  const fillSpikeData = useCallback(() => {
-    setBeatValue(getSpikeValue(spikeIndex.current))
-
-    spikeIndex.current =
-      spikeIndex.current < spikeValues.length ? spikeIndex.current + 1 : -1
-  }, [setBeatValue])
-
-  const fillIdleData = useCallback(() => {
-    setBeatValue(getIdleBeatValue())
-  }, [setBeatValue])
-
-  const updateData = useCallback(() => {
-    beatIndex.current = getNextBeatIndex(
-      beatIndex.current,
-      beats.current.length
-    )
-
-    if (spikeIndex.current >= 0 || isSpike) {
-      fillSpikeData()
-      setIsSpike(false)
-    } else {
-      fillIdleData()
-    }
-  }, [isSpike, fillSpikeData, fillIdleData])
-
-  const paint = useCallback(() => {
-    renderer?.render(beats.current, beatIndex.current)
-  }, [renderer])
-
-  useInterval(
-    () => {
-      updateData()
-      paint()
-    },
-    renderer ? paintInterval : false
-  )
-
-  useInterval(bang, renderer && beatFrequency ? beatFrequency : false)
+  useWindowResize(onResize)
 
   useEffect(() => {
     const ctx = canvas.current?.getContext('2d')
@@ -128,17 +72,32 @@ const useCardiogram: UseCardiogram = ({
       return
     }
 
-    const renderer = new CanvasRenderer(ctx, {
+    renderer.current = new CanvasRenderer(ctx, new IntervalManager(), {
       width,
       height,
       color,
       thickness,
       scale: constraintWithinRange(scale, 5, 100),
-      cursorSize
+      cursorSize,
+      density,
+      paintInterval,
+      beatFrequency
     })
 
-    setRenderer(renderer)
-  }, [width, height, color, thickness, scale, cursorSize])
+    return () => {
+      renderer.current?.destroy()
+    }
+  }, [
+    width,
+    height,
+    color,
+    thickness,
+    scale,
+    cursorSize,
+    density,
+    paintInterval,
+    beatFrequency
+  ])
 
   return {
     width,
