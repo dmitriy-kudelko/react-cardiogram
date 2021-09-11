@@ -1,7 +1,6 @@
 import { RenderOptions } from './CanvasRenderer'
-import { OtherOptions } from './types'
 
-const defaults: RenderOptions & OtherOptions = {
+const defaults: RenderOptions = {
   width: 500,
   height: 100,
   color: '#22ff22',
