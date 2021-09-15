@@ -1,11 +1,5 @@
-import {
-  createBeatRange,
-  getIdleBeatValue,
-  getNextBeatIndex,
-  getSpikeValue,
-  spikeValues
-} from './util'
 import IntervalManager from './IntervalManager'
+import { Util } from './Util'
 
 export interface RenderOptions {
   width: number
@@ -25,23 +19,18 @@ interface Coordinates {
 }
 
 export default class CanvasRenderer {
-  private readonly ctx: CanvasRenderingContext2D
-  private readonly options: RenderOptions
   private readonly beats: number[] = []
   private beatIndex = 0
   private spikeIndex = -1
   private isSpike = false
-  private intervalManager: IntervalManager
 
   constructor(
-    ctx: CanvasRenderingContext2D,
-    intervalManager: IntervalManager,
-    options: RenderOptions
+    private readonly ctx: CanvasRenderingContext2D,
+    private readonly intervalManager: IntervalManager,
+    private readonly util: Util,
+    private readonly options: RenderOptions
   ) {
-    this.ctx = ctx
-    this.options = options
-    this.beats = createBeatRange(options.width, options.density)
-    this.intervalManager = intervalManager
+    this.beats = this.createBeatRange()
 
     this.initTimers()
   }
@@ -52,6 +41,12 @@ export default class CanvasRenderer {
 
   public destroy(): void {
     this.intervalManager.clearAll()
+  }
+
+  private createBeatRange(): number[] {
+    const { width, density } = this.options
+
+    return this.util.createBeatRange(width, density)
   }
 
   private eachBeat(
@@ -144,7 +139,10 @@ export default class CanvasRenderer {
   }
 
   private updateData(): void {
-    this.beatIndex = getNextBeatIndex(this.beatIndex, this.beats.length)
+    this.beatIndex = this.util.getNextBeatIndex(
+      this.beatIndex,
+      this.beats.length
+    )
 
     if (this.spikeIndex >= 0 || this.isSpike) {
       this.fillSpikeData()
@@ -159,12 +157,15 @@ export default class CanvasRenderer {
   }
 
   private fillIdleData(): void {
-    this.setBeatValue(getIdleBeatValue())
+    this.setBeatValue(this.util.getIdleBeatValue())
   }
 
   private fillSpikeData() {
-    this.setBeatValue(getSpikeValue(this.spikeIndex))
+    this.setBeatValue(this.util.getSpikeValue(this.spikeIndex))
+
     this.spikeIndex =
-      this.spikeIndex < spikeValues.length ? this.spikeIndex + 1 : -1
+      this.spikeIndex < this.util.getSpikeValuesCount()
+        ? this.spikeIndex + 1
+        : -1
   }
 }

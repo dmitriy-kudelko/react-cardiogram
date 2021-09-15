@@ -7,11 +7,11 @@ import {
   useState
 } from 'react'
 
-import { constraintWithinRange } from './util'
 import useWindowResize from './use-window-resize'
 import CanvasRenderer, { RenderOptions } from './CanvasRenderer'
 import { ManualBangHandle } from './types'
 import IntervalManager from './IntervalManager'
+import util from './Util'
 
 interface Props extends Omit<RenderOptions, 'width'> {
   defaultWidth: number
@@ -72,12 +72,12 @@ const useCardiogram: UseCardiogram = ({
       return
     }
 
-    renderer.current = new CanvasRenderer(ctx, new IntervalManager(), {
+    renderer.current = new CanvasRenderer(ctx, new IntervalManager(), util, {
       width,
       height,
       color,
       thickness,
-      scale: constraintWithinRange(scale, 5, 100),
+      scale: util.constraintWithinRange(scale, 5, 100),
       cursorSize,
       density,
       paintInterval,
