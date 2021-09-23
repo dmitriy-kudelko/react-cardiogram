@@ -1,10 +1,21 @@
-import util from './Util'
+import Cardiogram from './Cardiogram'
 
-describe('Util', () => {
+describe('Cardiogram', () => {
+  let cardiogram: Cardiogram
+
+  beforeEach(() => {
+    cardiogram = new Cardiogram({
+      width: 500,
+      density: 2
+    })
+  })
+
   describe('createBeatRange', () => {
     const assertBeatCount = (width: number, beatCount: number, density = 2) => {
       const expected = new Array(beatCount).fill(0)
-      const result = util.createBeatRange(width, density)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const result = cardiogram.createBeatRange(width, density)
 
       expect(result.length).toEqual(expected.length)
     }
@@ -32,7 +43,9 @@ describe('Util', () => {
       ]
 
       values.forEach(([factor, offset]) => {
-        const value = util.getBeatValue(factor, offset)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const value = Cardiogram.getBeatValue(factor, offset)
 
         expect(value).toBeLessThanOrEqual(offset + factor)
       })
@@ -48,22 +61,11 @@ describe('Util', () => {
     ])(
       'produces correct index for currentIndex %i and beatCount %i',
       (currentIndex, beatCount, nextIndex) => {
-        expect(util.getNextBeatIndex(currentIndex, beatCount)).toEqual(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        expect(Cardiogram.getNextBeatIndex(currentIndex, beatCount)).toEqual(
           nextIndex
         )
-      }
-    )
-  })
-
-  describe('constraintWithinRange', () => {
-    it.each<number[]>([
-      [8, 10, 100, 10],
-      [11, 10, 100, 11],
-      [101, 10, 100, 100]
-    ])(
-      'constraints value %i within range of min %i and max %i',
-      (value, min, max, result) => {
-        expect(util.constraintWithinRange(value, min, max)).toEqual(result)
       }
     )
   })

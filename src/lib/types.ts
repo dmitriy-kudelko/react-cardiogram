@@ -1,6 +1,7 @@
-import { RenderOptions } from './CanvasRenderer'
+import { RendererOptions } from './CanvasRenderer'
+import { CardiogramOptions } from './Cardiogram'
 
-export type CardiogramProps = Partial<RenderOptions>
+export type CardiogramProps = RendererOptions & CardiogramOptions
 
 export interface ManualBangHandle {
   bang: () => void

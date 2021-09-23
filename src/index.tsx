@@ -1,11 +1,11 @@
 import React, { forwardRef } from 'react'
 
-import useCardiogram from './lib/use-cardiogram'
+import { CardiogramProps, ManualBangHandle } from './lib/types'
+import useCardiogram from './lib/hooks/use-cardiogram'
 
 import defaults from './lib/defaults'
-import { CardiogramProps, ManualBangHandle } from './lib/types'
 
-const Cardiogram = forwardRef<ManualBangHandle, CardiogramProps>(
+const Cardiogram = forwardRef<ManualBangHandle, Partial<CardiogramProps>>(
   (
     {
       width: defaultWidth = defaults.width,

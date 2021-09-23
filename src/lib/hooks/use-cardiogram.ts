@@ -8,12 +8,13 @@ import {
 } from 'react'
 
 import useWindowResize from './use-window-resize'
-import CanvasRenderer, { RenderOptions } from './CanvasRenderer'
-import { ManualBangHandle } from './types'
-import IntervalManager from './IntervalManager'
-import util from './Util'
+import Cardiogram, { CardiogramOptions } from '../Cardiogram'
+import CanvasRenderer, { RendererOptions } from '../CanvasRenderer'
+import { CardiogramProps, ManualBangHandle } from '../types'
+import IntervalManager from '../IntervalManager'
+import { constraintWithinRange } from '../util'
 
-interface Props extends Omit<RenderOptions, 'width'> {
+interface Props extends Omit<CardiogramProps, 'width'> {
   defaultWidth: number
   ref: Ref<ManualBangHandle>
 }
@@ -72,17 +73,28 @@ const useCardiogram: UseCardiogram = ({
       return
     }
 
-    renderer.current = new CanvasRenderer(ctx, new IntervalManager(), util, {
+    const rendererOptions: RendererOptions = {
       width,
       height,
       color,
       thickness,
-      scale: util.constraintWithinRange(scale, 5, 100),
+      scale: constraintWithinRange(scale, 5, 100),
       cursorSize,
-      density,
       paintInterval,
       beatFrequency
-    })
+    }
+
+    const cardiogramOptions: CardiogramOptions = {
+      width,
+      density
+    }
+
+    renderer.current = new CanvasRenderer(
+      ctx,
+      new Cardiogram(cardiogramOptions),
+      new IntervalManager(),
+      rendererOptions
+    )
 
     return () => {
       renderer.current?.destroy()
