@@ -1,64 +1,62 @@
-import {
-  createBeatRange,
-  getIdleBeatValue,
-  getNextBeatIndex,
-  getSpikeValue,
-  spikeValues
-} from './util'
 import IntervalManager from './IntervalManager'
-
-export interface RenderOptions {
-  width: number
-  height: number
-  color: string
-  thickness: number
-  scale: number
-  cursorSize: number
-  density: number
-  paintInterval: number
-  beatFrequency?: number
-}
+import Cardiogram from './Cardiogram'
 
 interface Coordinates {
   x: number
   y: number
 }
 
+export interface RendererOptions {
+  width: number
+  height: number
+  color: string
+  thickness: number
+  scale: number
+  cursorSize: number
+  paintInterval: number
+  beatFrequency?: number
+}
+
 export default class CanvasRenderer {
-  private readonly ctx: CanvasRenderingContext2D
-  private readonly options: RenderOptions
-  private readonly beats: number[] = []
-  private beatIndex = 0
-  private spikeIndex = -1
-  private isSpike = false
-  private intervalManager: IntervalManager
-
   constructor(
-    ctx: CanvasRenderingContext2D,
-    intervalManager: IntervalManager,
-    options: RenderOptions
+    private readonly ctx: CanvasRenderingContext2D,
+    private readonly cardiogram: Cardiogram,
+    private readonly intervalManager: IntervalManager,
+    private readonly options: RendererOptions
   ) {
-    this.ctx = ctx
-    this.options = options
-    this.beats = createBeatRange(options.width, options.density)
-    this.intervalManager = intervalManager
-
-    this.initTimers()
-  }
-
-  public renderSpike(): void {
-    this.isSpike = true
+    this.initialize()
   }
 
   public destroy(): void {
     this.intervalManager.clearAll()
   }
 
+  public renderSpike(): void {
+    this.cardiogram.renderSpike()
+  }
+
+  private initialize() {
+    const { paintInterval, beatFrequency } = this.options
+
+    this.intervalManager.setInterval(() => {
+      this.cardiogram.updateData()
+      this.render()
+    }, paintInterval)
+
+    if (beatFrequency) {
+      this.intervalManager.setInterval(() => {
+        this.renderSpike()
+      }, beatFrequency)
+    }
+  }
+
   private eachBeat(
     baseY: number,
     iteratee: (coords: Coordinates) => void
   ): Coordinates {
-    const { beats, beatIndex } = this
+    const beats = this.cardiogram.getData()
+    const beatIndex = this.cardiogram.getBeatIndex()
+
     const { length } = beats
     const { width, height, scale } = this.options
     const yFactor = height * (scale / 100)
@@ -126,45 +124,5 @@ export default class CanvasRenderer {
     ctx.strokeStyle = color
     ctx.fillStyle = color
     ctx.lineWidth = thickness
-  }
-
-  private initTimers() {
-    const { paintInterval, beatFrequency } = this.options
-
-    this.intervalManager.setInterval(() => {
-      this.updateData()
-      this.render()
-    }, paintInterval)
-
-    if (beatFrequency) {
-      this.intervalManager.setInterval(() => {
-        this.renderSpike()
-      }, beatFrequency)
-    }
-  }
-
-  private updateData(): void {
-    this.beatIndex = getNextBeatIndex(this.beatIndex, this.beats.length)
-
-    if (this.spikeIndex >= 0 || this.isSpike) {
-      this.fillSpikeData()
-      this.isSpike = false
-    } else {
-      this.fillIdleData()
-    }
-  }
-
-  private setBeatValue(value: number): void {
-    this.beats[this.beatIndex] = value
-  }
-
-  private fillIdleData(): void {
-    this.setBeatValue(getIdleBeatValue())
-  }
-
-  private fillSpikeData() {
-    this.setBeatValue(getSpikeValue(this.spikeIndex))
-    this.spikeIndex =
-      this.spikeIndex < spikeValues.length ? this.spikeIndex + 1 : -1
   }
 }

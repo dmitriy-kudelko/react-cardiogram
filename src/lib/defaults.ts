@@ -1,6 +1,6 @@
-import { RenderOptions } from './CanvasRenderer'
+import { CardiogramProps } from './types'
 
-const defaults: RenderOptions = {
+const defaults: CardiogramProps = {
   width: 500,
   height: 100,
   color: '#22ff22',

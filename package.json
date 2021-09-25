@@ -1,7 +1,7 @@
 {
   "name": "react-cardiogram",
   "description": "Animated cardiogram component for React",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "license": "MIT",
   "author": "Dmitriy Kudelko <dmitriy.kudelko@gmail.com>",
   "source": "src/index.tsx",
@@ -54,8 +54,7 @@
   },
   "dependencies": {
     "@use-it/event-listener": "^0.1.6",
-    "lodash-es": "^4.17.21",
-    "use-interval": "^1.3.0"
+    "lodash-es": "^4.17.21"
   },
   "peerDependencies": {
     "react": "^17.x",
